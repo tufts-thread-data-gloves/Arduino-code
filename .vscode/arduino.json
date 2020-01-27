@@ -1,0 +1,6 @@
+{
+    "programmer": "AVR ISP",
+    "board": "arduino:mbed:nano33ble",
+    "port": "COM5",
+    "sketch": "thread_to_ble.ino"
+}
