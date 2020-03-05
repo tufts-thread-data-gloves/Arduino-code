@@ -19,7 +19,7 @@ void setup() {
 //  Serial.println("ok?");
  BLE.setConnectable(true);
  BLE.setAdvertisedService(sensorService);
- gloveData.writeValue("ababababababababababababababababab");
+ gloveData.writeValue("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0");
  sensorService.addCharacteristic(gloveData);
  BLE.addService(sensorService);
  BLE.setAdvertisedService(sensorService);
@@ -27,13 +27,16 @@ void setup() {
  BLE.advertise();
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
 
 }
 
 void loop() {
   uint8_t data[34];
   float imuData[6];
-  int threadData[5];
+  uint16_t threadData[5];
   
   digitalWrite(LED_BUILTIN, LOW);
  BLEDevice central = BLE.central();
@@ -46,20 +49,20 @@ void loop() {
      if(IMU.accelerationAvailable()) 
        IMU.readAcceleration(imuData[0], imuData[1], imuData[2]);
    
-     if(IMU.magneticFieldAvailable()) 
-       IMU.readMagneticField(imuData[3], imuData[4], imuData[5]);
+     if(IMU.gyroscopeAvailable()) 
+       IMU.readGyroscope(imuData[3], imuData[4], imuData[5]);
 
-     threadData[0] = 0;
-     threadData[1] = 0;
-     threadData[2] = 0;
-     threadData[3] = 0;
-     threadData[4] = 0;
+     threadData[0] = analogRead(A0);
+     threadData[1] = analogRead(A1);
+     threadData[2] = analogRead(A2);
+     threadData[3] = analogRead(A3);
+     threadData[4] = analogRead(A4);
 
      for (int i = 0; i < 24; i++) {
-      data[i] = *(((char*)imuData) + i);
+      data[i] = *(((uint8_t*)imuData) + i);
      }
      for (int i = 24; i < 34; i++) {
-      data[i] = *(((char*)threadData) + i - 24);
+      data[i] = *(((uint8_t*)threadData) + i - 24);
      }
 
      gloveData.writeValue((const void *) data, 34);

@@ -20,7 +20,7 @@ async def run():
     if (await client.connect()):
         services = await client.get_services()
         print(services.characteristics)
-        plt.ion()
+        # plt.ion()
         time = []
         # index = []
         middle = []
@@ -33,19 +33,20 @@ async def run():
             ctr += 1
             if (ctr <= 25):
                 # index.append(struct.unpack('h', await client.read_gatt_char("1b9b0002-3e7e-4c78-93b3-0f86540298f1"))[0]*(128/1024))
-                middle.append(struct.unpack('h', await client.read_gatt_char("1b9b0001-3e7e-4c78-93b3-0f86540298f1"))[0]*(128/1024))
+                middle.append(struct.unpack('ffffffhhhhh', await client.read_gatt_char("1b9b0001-3e7e-4c78-93b3-0f86540298f1")))
                 time = range(ctr)
             else:
                 middle.pop(0)
                 # index.pop(0)
-                middle.append(struct.unpack('h', await client.read_gatt_char("1b9b0001-3e7e-4c78-93b3-0f86540298f1"))[0]*(128/1024))
+                middle.append(struct.unpack('ffffffhhhhh', await client.read_gatt_char("1b9b0001-3e7e-4c78-93b3-0f86540298f1")))
                 # index.append(struct.unpack('h', await client.read_gatt_char("1b9b0002-3e7e-4c78-93b3-0f86540298f1"))[0]*(128/1024))
                 time = range(ctr-25, ctr)
-                plt.xlim(time[0], time[24])
-            plt.plot(time, middle, 'r-')
-            plt.title("Finger Strain")
-            plt.draw()
-            plt.pause(0.001)
+                # plt.xlim(time[0], time[24])
+            # plt.plot(time, middle, 'r-')
+            # plt.title("Finger Strain")
+            # plt.draw()
+            # plt.pause(0.001)
+            print(middle)
 
 
         # while(1):
